@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Modern Todo App</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+
+        body{
+            background:#f4f4f4;
+            font-family:Arial;
+        }
+
+        .main-box{
+            width:420px;
+            margin:30px auto;
+            background:white;
+            border-radius:25px;
+            padding:25px;
+            box-shadow:0px 0px 20px rgba(0,0,0,0.1);
+        }
+
+        .heading{
+            font-size:35px;
+            font-weight:bold;
+        }
+
+        .date{
+            color:gray;
+            font-size:22px;
+        }
+
+        .cards{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:15px;
+            margin-top:20px;
+        }
+
+        .card-box{
+            padding:18px;
+            border-radius:18px;
+        }
+
+        .health{
+            background:#ece6ff;
+        }
+
+        .work{
+            background:#e7fff1;
+        }
+
+        .study{
+            background:#ffe9f3;
+        }
+
+        .personal{
+            background:#f1f1f1;
+        }
+
+        .task-box{
+            margin-top:20px;
+        }
+
+        .task{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:12px 0;
+            border-bottom:1px solid #ddd;
+        }
+
+        .completed{
+            text-decoration:line-through;
+            color:gray;
+        }
+
+        .badge-custom{
+            font-size:10px;
+            padding:4px 8px;
+            border-radius:10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="main-box">
+
+    <div class="d-flex align-items-center justify-content-between">
+
+        <div>
+            <span class="heading">
+                Tasks
+            </span>
+
+            <span class="date">
+                26 Dec
+            </span>
+        </div>
+
+    </div>
+
+    <!-- Category Cards -->
+
+    <div class="cards">
+
+        <div class="card-box health">
+
+            <h5>
+                💜 {{ health_count }}
+            </h5>
+
+            <small>
+                Health
+            </small>
+
+        </div>
+
+        <div class="card-box work">
+
+            <h5>
+                💚 {{ work_count }}
+            </h5>
+
+            <small>
+                Work
+            </small>
+
+        </div>
+
+        <div class="card-box study">
+
+            <h5>
+                💗 {{ study_count }}
+            </h5>
+
+            <small>
+                Study
+            </small>
+
+        </div>
+
+        <div class="card-box personal">
+
+            <h5>
+                🤍 {{ personal_count }}
+            </h5>
+
+            <small>
+                Personal
+            </small>
+
+        </div>
+
+    </div>
+
+    <!-- Add Form -->
+
+    <form method="POST"
+          class="mt-4 d-flex flex-column gap-2">
+
+        {% csrf_token %}
+
+        <input type="text"
+               name="title"
+               class="form-control"
+               placeholder="Enter task">
+
+        <select name="category"
+                class="form-control">
+
+            <option>Health</option>
+            <option>Work</option>
+            <option>Study</option>
+            <option>Personal</option>
+
+        </select>
+
+        <input type="datetime-local"
+               name="due_date"
+               class="form-control">
+
+        <button class="btn btn-dark">
+            Add Task
+        </button>
+
+    </form>
+
+    <!-- Task List -->
+
+    <div class="task-box">
+
+        {% for task in tasks %}
+
+        <div class="task">
+
+            <div>
+
+                {% if task.completed %}
+
+                    <span class="completed">
+                        {{ task.title }}
+                    </span>
+
+                {% else %}
+
+                    <span>
+                        {{ task.title }}
+                    </span>
+
+                {% endif %}
+
+                <br>
+
+                <small class="badge bg-primary badge-custom">
+                    {{ task.category }}
+                </small>
+
+                <br>
+
+                <small class="text-secondary">
+                    {{ task.due_date }}
+                </small>
+
+            </div>
+
+            <div class="d-flex gap-2">
+
+                <a href="{% url 'complete' task.id %}"
+                   class="btn btn-success btn-sm">
+
+                    ✔
+
+                </a>
+
+                <a href="{% url 'delete' task.id %}"
+                   class="btn btn-danger btn-sm">
+
+                    🗑
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
